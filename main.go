@@ -18,18 +18,47 @@ var colours = Colours {
 	Bg:       lipgloss.Color("#E1E1E3"),
 	Fg:       lipgloss.Color("#313437"),
 	FgSubtle: lipgloss.Color("#AAAEB3"),
+
+// Represents a single run of a typing test
+// `test` is the contents for the test
+// `currentIndex` is the index of the character expected to be typed next
+// `currentlyInvalid` indicates that the current location was entered incorrectly
+// `errorIndices` is an array of indices into the text where errors occurred. There can be mulitple occurrences of any index
+type test struct {
+	text             string
+	currentIndex     int
+	currentlyInvalid bool
+	errorIndices     []int
+	complete         bool
+}
+
+// Plays the passed in character on the test
+func (test *test) play(char byte) {
+	if test.complete {
+		return
+	}
+
+	if test.text[test.currentIndex] == char {
+		if test.currentIndex == len(test.text) - 1 {
+			test.complete = true
+		} else {
+			test.currentIndex++
+		}
+	} else {
+		test.errorIndices = append(test.errorIndices, test.currentIndex)
+	}
 }
 
 type model struct {
 	width  int
 	height int
 
-	runText string
+	test test
 }
 
 func initModel() model {
 	return model{
-		runText: "Hello world",
+		test: test{"Hello world", 0, false, []int{}, false},
 	}
 }
 
@@ -44,6 +73,12 @@ func (m model) Update(msg tea.Msg) (tea.Model, tea.Cmd) {
 		case "ctrl+c":
 			return m, tea.Quit
 		}
+
+		if len(msg.String()) == 1 {
+			m.test.play(msg.String()[0])
+			return m, nil
+		}
+
 	case tea.WindowSizeMsg:
 		m.width = msg.Width
 		m.height = msg.Height
