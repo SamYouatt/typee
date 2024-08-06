@@ -39,7 +39,7 @@ func (m model) View() string {
 }
 
 func main() {
-	program := tea.NewProgram(initModel())
+	program := tea.NewProgram(initModel(), tea.WithAltScreen())
 	if _, err := program.Run(); err != nil {
 		fmt.Printf("Error: %v", err)
 		os.Exit(1)
