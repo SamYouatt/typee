@@ -23,7 +23,6 @@ var colours = Colours{
 	Error:    lipgloss.Color("#DA3333"),
 }
 
-
 type model struct {
 	width  int
 	height int
@@ -47,10 +46,13 @@ func (m model) Update(msg tea.Msg) (tea.Model, tea.Cmd) {
 		switch msg.String() {
 		case "ctrl+c":
 			return m, tea.Quit
+		case " ":
+			m.test.PlaySpace()
+			return m, nil
 		}
 
 		if len(msg.String()) == 1 {
-			m.test.Play(msg.String()[0])
+			m.test.PlayCharacter(msg.String()[0])
 			return m, nil
 		}
 
@@ -62,7 +64,7 @@ func (m model) Update(msg tea.Msg) (tea.Model, tea.Cmd) {
 	return m, nil
 }
 
-func (test Test) renderTest() string {
+func (test Test) renderTest(width int) string {
 	untypedStyle := lipgloss.NewStyle().
 		Foreground(colours.FgSubtle).
 		Background(colours.Bg)
@@ -90,7 +92,7 @@ func (test Test) renderTest() string {
 	testRendered := lipgloss.JoinHorizontal(lipgloss.Center, testLetters...)
 
 	viewStyle := lipgloss.NewStyle().
-		Width(80).
+		Width(width).
 		AlignHorizontal(lipgloss.Center).
 		Background(colours.Bg)
 
@@ -98,21 +100,22 @@ func (test Test) renderTest() string {
 }
 
 func (m model) View() string {
-	currentIndexStyle := lipgloss.NewStyle().
-		Width(80).
+	testViewWidth := min(80, len(m.test.text))
+	testProgressStyle := lipgloss.NewStyle().
+		Width(testViewWidth).
 		Foreground(colours.Fg).
 		Background(colours.Bg).
-		AlignHorizontal(lipgloss.Center)
-	currentIndex := currentIndexStyle.Render(fmt.Sprintf("%d", m.test.currentIndex))
+		AlignHorizontal(lipgloss.Left)
+	testProgress := testProgressStyle.Render(fmt.Sprintf("%d/%d", m.test.completedWords, m.test.numWords))
 
 	numErrorsStyle := lipgloss.NewStyle().
-		Width(80).
+		Width(testViewWidth).
 		Foreground(colours.Error).
 		Background(colours.Bg).
 		AlignHorizontal(lipgloss.Center)
 	numErrors := numErrorsStyle.Render(fmt.Sprintf("%d", len(m.test.errorIndices)))
 
-	view := lipgloss.JoinVertical(lipgloss.Center, m.test.renderTest(), currentIndex, numErrors)
+	view := lipgloss.JoinVertical(lipgloss.Center, testProgress, m.test.renderTest(testViewWidth), numErrors)
 
 	return lipgloss.Place(m.width, m.height, lipgloss.Center, lipgloss.Center, view, lipgloss.WithWhitespaceBackground(colours.Bg))
 }

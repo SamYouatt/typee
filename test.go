@@ -10,7 +10,7 @@ import "strings"
 type Test struct {
 	text             string
 	numWords         int
-	completedWords int
+	completedWords   int
 	currentIndex     int
 	currentlyInvalid bool
 	errorIndices     []int
@@ -21,18 +21,31 @@ func NewTest(testText string) *Test {
 	numWords := len(strings.Fields(testText))
 
 	return &Test{
-		text: testText,
-		numWords: numWords,
-		completedWords: 0,
-		currentIndex: 0,
+		text:             testText,
+		numWords:         numWords,
+		completedWords:   0,
+		currentIndex:     0,
 		currentlyInvalid: false,
-		errorIndices: []int{},
-		complete: false,
+		errorIndices:     []int{},
+		complete:         false,
+	}
+}
+
+func (test *Test) PlaySpace() {
+	if test.complete {
+		return
+	}
+
+	if test.text[test.currentIndex] == ' ' {
+		test.completedWords++
+		test.currentIndex++
+	} else {
+		test.errorIndices = append(test.errorIndices, test.currentIndex)
 	}
 }
 
 // Plays the passed in character on the test
-func (test *Test) Play(char byte) {
+func (test *Test) PlayCharacter(char byte) {
 	if test.complete {
 		return
 	}
