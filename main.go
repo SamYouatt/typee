@@ -25,24 +25,35 @@ var colours = Colours{
 	Error:    lipgloss.Color("#DA3333"),
 }
 
-type model struct {
+type modelState = int
+
+const (
+	Ready modelState = iota
+	InTest
+	TestComplete
+)
+
+type Model struct {
+	state modelState
+
 	width  int
 	height int
 
 	test *Test
 }
 
-func initModel() model {
-	return model{
+func initModel() Model {
+	return Model{
+		state: Ready,
 		test: NewTest("Hello world, this is a really really cool typing test"),
 	}
 }
 
-func (m model) Init() tea.Cmd {
+func (m Model) Init() tea.Cmd {
 	return nil
 }
 
-func (m model) Update(msg tea.Msg) (tea.Model, tea.Cmd) {
+func (m Model) Update(msg tea.Msg) (tea.Model, tea.Cmd) {
 	switch msg := msg.(type) {
 	case tea.KeyMsg:
 		switch msg.String() {
