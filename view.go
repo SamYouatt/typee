@@ -6,7 +6,7 @@ import (
 	"github.com/charmbracelet/lipgloss"
 )
 
-func (m Model) View() string {
+func testView(m Model) string {
 	testViewWidth := min(80, len(m.test.text))
 	testProgressStyle := lipgloss.NewStyle().
 		Width(testViewWidth).
@@ -18,4 +18,17 @@ func (m Model) View() string {
 	view := lipgloss.JoinVertical(lipgloss.Center, testProgress, m.test.renderTest(testViewWidth))
 
 	return lipgloss.Place(m.width, m.height, lipgloss.Center, lipgloss.Center, view, lipgloss.WithWhitespaceBackground(colours.Bg))
+}
+
+func (m Model) View() string {
+	switch m.state {
+	case Ready:
+		return "Press enter to start"
+	case InTest:
+		return testView(m)
+	case TestComplete:
+		return "not done yet"
+	}
+
+	return ""
 }
