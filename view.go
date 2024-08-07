@@ -17,6 +17,17 @@ func readyToStartView(m Model) string {
 	return readyTextStyle.Render("Press enter to start")
 }
 
+func finishedTestView(m Model) string {
+	testCompleteStyle := lipgloss.NewStyle().
+		Width(m.width).
+		Height(m.height).
+		Background(colours.Bg).
+		Foreground(colours.Fg).
+		Align(lipgloss.Center, lipgloss.Center)
+
+	return testCompleteStyle.Render("Test complete! 🎉")
+}
+
 func testView(m Model) string {
 	testViewWidth := min(80, len(m.test.text))
 	testProgressStyle := lipgloss.NewStyle().
@@ -38,7 +49,7 @@ func (m Model) View() string {
 	case InTest:
 		return testView(m)
 	case TestComplete:
-		return "not done yet"
+		return finishedTestView(m)
 	}
 
 	return ""

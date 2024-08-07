@@ -84,7 +84,8 @@ func (m Model) Update(msg tea.Msg) (tea.Model, tea.Cmd) {
 		m.height = msg.Height
 
 	case TestCompleteMsg:
-		fmt.Println("test complete")
+		m.state = TestComplete
+		return m, nil
 	}
 
 	return m, nil
