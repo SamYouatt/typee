@@ -31,6 +31,14 @@ func NewTest(testText string) *Test {
 	}
 }
 
+func (test *Test) PlayBackspace() {
+	if test.complete || !test.currentlyInvalid {
+		return
+	}
+
+	test.currentlyInvalid = false
+}
+
 func (test *Test) PlaySpace() {
 	if test.complete {
 		return
@@ -41,6 +49,7 @@ func (test *Test) PlaySpace() {
 		test.currentIndex++
 	} else {
 		test.errorIndices = append(test.errorIndices, test.currentIndex)
+		test.currentlyInvalid = true
 	}
 }
 
@@ -58,5 +67,6 @@ func (test *Test) PlayCharacter(char byte) {
 		}
 	} else {
 		test.errorIndices = append(test.errorIndices, test.currentIndex)
+		test.currentlyInvalid = true
 	}
 }
