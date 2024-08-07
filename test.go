@@ -59,6 +59,11 @@ func (test *Test) PlayCharacter(char byte) {
 		return
 	}
 
+	if test.currentlyInvalid {
+		// Have to hit backspace to fix error
+		return
+	}
+
 	if test.text[test.currentIndex] == char {
 		if test.currentIndex == len(test.text)-1 {
 			test.complete = true
