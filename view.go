@@ -6,6 +6,17 @@ import (
 	"github.com/charmbracelet/lipgloss"
 )
 
+func readyToStartView(m Model) string {
+	readyTextStyle := lipgloss.NewStyle().
+		Width(m.width).
+		Height(m.height).
+		Background(colours.Bg).
+		Foreground(colours.Fg).
+		Align(lipgloss.Center, lipgloss.Center)
+
+	return readyTextStyle.Render("Press enter to start")
+}
+
 func testView(m Model) string {
 	testViewWidth := min(80, len(m.test.text))
 	testProgressStyle := lipgloss.NewStyle().
@@ -23,7 +34,7 @@ func testView(m Model) string {
 func (m Model) View() string {
 	switch m.state {
 	case Ready:
-		return "Press enter to start"
+		return readyToStartView(m)
 	case InTest:
 		return testView(m)
 	case TestComplete:

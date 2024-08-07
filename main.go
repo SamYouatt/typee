@@ -45,7 +45,7 @@ type Model struct {
 func initModel() Model {
 	return Model{
 		state: Ready,
-		test: NewTest("Hello world, this is a really really cool typing test"),
+		test:  NewTest("Hello world, this is a really really cool typing test"),
 	}
 }
 
@@ -65,6 +65,11 @@ func (m Model) Update(msg tea.Msg) (tea.Model, tea.Cmd) {
 		case "backspace":
 			m.test.PlayBackspace()
 			return m, nil
+		case "enter":
+			if m.state == Ready {
+				m.state = InTest
+				return m, nil
+			}
 		}
 
 		if len(msg.String()) == 1 {
@@ -117,7 +122,7 @@ func (test Test) renderTest(width int) string {
 			testLetters = append(testLetters, previousErrorStyle.Render(string(letter)))
 			continue
 		}
-		
+
 		// Previously entered correctly
 		if test.currentIndex > index {
 			testLetters = append(testLetters, correctlyTypedStyle.Render(string(letter)))
@@ -137,7 +142,6 @@ func (test Test) renderTest(width int) string {
 
 	return viewStyle.Render(testRendered)
 }
-
 
 func main() {
 	program := tea.NewProgram(initModel(), tea.WithAltScreen())
