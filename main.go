@@ -4,7 +4,6 @@ import (
 	"fmt"
 	"os"
 	"slices"
-	"strings"
 
 	tea "github.com/charmbracelet/bubbletea"
 	"github.com/charmbracelet/lipgloss"
@@ -24,62 +23,17 @@ var colours = Colours{
 	Error:    lipgloss.Color("#DA3333"),
 }
 
-// Represents a single run of a typing test
-// `test` is the contents for the test
-// `currentIndex` is the index of the character expected to be typed next
-// `currentlyInvalid` indicates that the current location was entered incorrectly
-// `errorIndices` is an array of indices into the text where errors occurred. There can be mulitple occurrences of any index
-type test struct {
-	text             string
-	numWords         int
-	completedWords int
-	currentIndex     int
-	currentlyInvalid bool
-	errorIndices     []int
-	complete         bool
-}
-
-func newTest(testText string) test {
-	numWords := len(strings.Fields(testText))
-
-	return test{
-		text: testText,
-		numWords: numWords,
-		completedWords: 0,
-		currentIndex: 0,
-		currentlyInvalid: false,
-		errorIndices: []int{},
-		complete: false,
-	}
-}
-
-// Plays the passed in character on the test
-func (test *test) play(char byte) {
-	if test.complete {
-		return
-	}
-
-	if test.text[test.currentIndex] == char {
-		if test.currentIndex == len(test.text)-1 {
-			test.complete = true
-		} else {
-			test.currentIndex++
-		}
-	} else {
-		test.errorIndices = append(test.errorIndices, test.currentIndex)
-	}
-}
 
 type model struct {
 	width  int
 	height int
 
-	test test
+	test *Test
 }
 
 func initModel() model {
 	return model{
-		test: newTest("Hello world"),
+		test: NewTest("Hello world"),
 	}
 }
 
@@ -96,7 +50,7 @@ func (m model) Update(msg tea.Msg) (tea.Model, tea.Cmd) {
 		}
 
 		if len(msg.String()) == 1 {
-			m.test.play(msg.String()[0])
+			m.test.Play(msg.String()[0])
 			return m, nil
 		}
 
@@ -108,7 +62,7 @@ func (m model) Update(msg tea.Msg) (tea.Model, tea.Cmd) {
 	return m, nil
 }
 
-func (test test) renderTest() string {
+func (test Test) renderTest() string {
 	untypedStyle := lipgloss.NewStyle().
 		Foreground(colours.FgSubtle).
 		Background(colours.Bg)
