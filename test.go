@@ -2,11 +2,6 @@ package main
 
 import "strings"
 
-// Represents a single run of a typing test
-// `test` is the contents for the test
-// `currentIndex` is the index of the character expected to be typed next
-// `currentlyInvalid` indicates that the current location was entered incorrectly
-// `errorIndices` is an array of indices into the text where errors occurred. There can be mulitple occurrences of any index
 type Test struct {
 	text             string
 	numWords         int
@@ -53,7 +48,6 @@ func (test *Test) PlaySpace() {
 	}
 }
 
-// Plays the passed in character on the test
 func (test *Test) PlayCharacter(char byte) {
 	if test.complete {
 		return
