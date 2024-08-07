@@ -8,7 +8,7 @@ import (
 func TestPlayCharacter_WithCorrectCharacter(t *testing.T) {
 	test := NewTest("Test text")
 
-    test.PlayCharacter('T')
+	test.PlayCharacter('T')
 
 	if test.currentIndex != 1 {
 		t.Errorf("Expected correct character to advance index")
@@ -18,7 +18,7 @@ func TestPlayCharacter_WithCorrectCharacter(t *testing.T) {
 func TestPlayCharacter_WithIncorrectCharacter(t *testing.T) {
 	test := NewTest("Test text")
 
-    test.PlayCharacter('x')
+	test.PlayCharacter('x')
 
 	if test.currentIndex != 0 {
 		t.Errorf("Should not have advanced current index for incorrect letter")
@@ -103,5 +103,22 @@ func TestPlayCharacter_OnLastCharacter_MarksTestAsComplete(t *testing.T) {
 
 	if !test.complete {
 		t.Errorf("Should have been marked as complete after last character correct")
+	}
+}
+
+func TestPlayCharacter_OnLastCharacter_ReturnsTestCompleteCmd(t *testing.T) {
+	test := NewTest("Test")
+	test.currentIndex = 3
+
+	cmd := test.PlayCharacter('t')
+
+	if cmd == nil {
+		t.Fatalf("Expected completed test to return a command that results in TestCompleteMsg but it returned nil")
+	}
+
+	_, ok := cmd().(TestCompleteMsg)
+
+	if !ok {
+		t.Errorf("Expected completed test to return a command that results in TestCompleteMsg but it did not return the correct type")
 	}
 }
