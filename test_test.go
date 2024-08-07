@@ -94,3 +94,14 @@ func TestPlayBackspace_WhenIncorrectLetterEntered(t *testing.T) {
 		t.Errorf("Should not be able to go back when pending letter")
 	}
 }
+
+func TestPlayCharacter_OnLastCharacter_MarksTestAsComplete(t *testing.T) {
+	test := NewTest("Test")
+	test.currentIndex = 3
+
+	test.PlayCharacter('t')
+
+	if !test.complete {
+		t.Errorf("Should have been marked as complete after last character correct")
+	}
+}
