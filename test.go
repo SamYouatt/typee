@@ -1,6 +1,10 @@
 package main
 
-import "strings"
+import (
+	"strings"
+
+	tea "github.com/charmbracelet/bubbletea"
+)
 
 type Test struct {
 	text             string
@@ -48,19 +52,20 @@ func (test *Test) PlaySpace() {
 	}
 }
 
-func (test *Test) PlayCharacter(char byte) {
+func (test *Test) PlayCharacter(char byte) tea.Cmd {
 	if test.complete {
-		return
+		return nil
 	}
 
 	if test.currentlyInvalid {
 		// Have to hit backspace to fix error
-		return
+		return nil
 	}
 
 	if test.text[test.currentIndex] == char {
 		if test.currentIndex == len(test.text)-1 {
 			test.complete = true
+			return func() tea.Msg { return TestCompleteMsg{} }
 		} else {
 			test.currentIndex++
 		}
@@ -68,4 +73,6 @@ func (test *Test) PlayCharacter(char byte) {
 		test.errorIndices = append(test.errorIndices, test.currentIndex)
 		test.currentlyInvalid = true
 	}
+
+	return nil
 }

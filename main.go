@@ -75,13 +75,16 @@ func (m Model) Update(msg tea.Msg) (tea.Model, tea.Cmd) {
 		}
 
 		if len(msg.String()) == 1 {
-			m.test.PlayCharacter(msg.String()[0])
-			return m, nil
+			cmd := m.test.PlayCharacter(msg.String()[0])
+			return m, cmd
 		}
 
 	case tea.WindowSizeMsg:
 		m.width = msg.Width
 		m.height = msg.Height
+
+	case TestCompleteMsg:
+		fmt.Println("test complete")
 	}
 
 	return m, nil
