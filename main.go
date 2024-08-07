@@ -4,6 +4,7 @@ import (
 	"fmt"
 	"os"
 	"slices"
+	"strings"
 
 	tea "github.com/charmbracelet/bubbletea"
 	"github.com/charmbracelet/lipgloss"
@@ -30,10 +31,26 @@ var colours = Colours{
 // `errorIndices` is an array of indices into the text where errors occurred. There can be mulitple occurrences of any index
 type test struct {
 	text             string
+	numWords         int
+	completedWords int
 	currentIndex     int
 	currentlyInvalid bool
 	errorIndices     []int
 	complete         bool
+}
+
+func newTest(testText string) test {
+	numWords := len(strings.Fields(testText))
+
+	return test{
+		text: testText,
+		numWords: numWords,
+		completedWords: 0,
+		currentIndex: 0,
+		currentlyInvalid: false,
+		errorIndices: []int{},
+		complete: false,
+	}
 }
 
 // Plays the passed in character on the test
@@ -62,7 +79,7 @@ type model struct {
 
 func initModel() model {
 	return model{
-		test: test{"Hello world", 0, false, []int{}, false},
+		test: newTest("Hello world"),
 	}
 }
 
