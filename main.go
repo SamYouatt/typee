@@ -117,27 +117,33 @@ func (test test) renderTest() string {
 	}
 
 	testRendered := lipgloss.JoinHorizontal(lipgloss.Center, testLetters...)
-	return testRendered
+
+	viewStyle := lipgloss.NewStyle().
+		Width(80).
+		AlignHorizontal(lipgloss.Center).
+		Background(colours.Bg)
+
+	return viewStyle.Render(testRendered)
 }
 
 func (m model) View() string {
 	currentIndexStyle := lipgloss.NewStyle().
-		Foreground(colours.Fg)
+		Width(80).
+		Foreground(colours.Fg).
+		Background(colours.Bg).
+		AlignHorizontal(lipgloss.Center)
 	currentIndex := currentIndexStyle.Render(fmt.Sprintf("%d", m.test.currentIndex))
 
 	numErrorsStyle := lipgloss.NewStyle().
-		Foreground(colours.Error)
+		Width(80).
+		Foreground(colours.Error).
+		Background(colours.Bg).
+		AlignHorizontal(lipgloss.Center)
 	numErrors := numErrorsStyle.Render(fmt.Sprintf("%d", len(m.test.errorIndices)))
 
 	view := lipgloss.JoinVertical(lipgloss.Center, m.test.renderTest(), currentIndex, numErrors)
 
-	viewStyle := lipgloss.NewStyle().
-		Width(m.width).
-		Height(m.height).
-		Background(colours.Bg).
-		Align(lipgloss.Center, lipgloss.Center)
-
-	return viewStyle.Render(view)
+	return lipgloss.Place(m.width, m.height, lipgloss.Center, lipgloss.Center, view, lipgloss.WithWhitespaceBackground(colours.Bg))
 }
 
 func main() {
