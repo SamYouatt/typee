@@ -5,6 +5,14 @@ import (
 	"testing"
 )
 
+func NewTest_StartsStopwatch(t *testing.T) {
+	test := NewTest("Test")
+
+	if !test.stopwatch.started {
+		t.Errorf("Expected stopwatch to be started by creating new test")
+	}
+}
+
 func TestPlayCharacter_WithCorrectCharacter(t *testing.T) {
 	test := NewTest("Test text")
 
