@@ -14,9 +14,12 @@ type Test struct {
 	currentlyInvalid bool
 	errorIndices     []int
 	complete         bool
+	stopwatch        Stopwatch
 }
 
 func NewTest(testText string) *Test {
+	stopwatch := Stopwatch{}
+	stopwatch.Start()
 	numWords := len(strings.Fields(testText))
 
 	return &Test{
@@ -27,6 +30,7 @@ func NewTest(testText string) *Test {
 		currentlyInvalid: false,
 		errorIndices:     []int{},
 		complete:         false,
+		stopwatch:        stopwatch,
 	}
 }
 
