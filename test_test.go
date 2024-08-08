@@ -114,19 +114,20 @@ func TestPlayCharacter_OnLastCharacter_MarksTestAsComplete(t *testing.T) {
 	}
 }
 
-func TestPlayCharacter_OnLastCharacter_ReturnsTestCompleteCmd(t *testing.T) {
+func TestPlayCharacter_OnNonLastCharacter_ReturnsFalse(t *testing.T) {
+	test := NewTest("Test")
+	test.currentIndex = 2
+
+	if test.PlayCharacter('s') {
+		t.Fatalf("Expected to return false when test not complete")
+	}
+}
+
+func TestPlayCharacter_OnLastCharacter_ReturnsTrue(t *testing.T) {
 	test := NewTest("Test")
 	test.currentIndex = 3
 
-	cmd := test.PlayCharacter('t')
-
-	if cmd == nil {
-		t.Fatalf("Expected completed test to return a command that results in TestCompleteMsg but it returned nil")
-	}
-
-	_, ok := cmd().(TestCompleteMsg)
-
-	if !ok {
-		t.Errorf("Expected completed test to return a command that results in TestCompleteMsg but it did not return the correct type")
+	if !test.PlayCharacter('t') {
+		t.Fatalf("Expected completed test to return true")
 	}
 }
