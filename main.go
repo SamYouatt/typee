@@ -3,7 +3,6 @@ package main
 import (
 	"fmt"
 	"os"
-	"slices"
 
 	tea "github.com/charmbracelet/bubbletea"
 	"github.com/charmbracelet/lipgloss"
@@ -55,7 +54,9 @@ func (m Model) Init() tea.Cmd {
 	return nil
 }
 
-type TestCompleteMsg struct{}
+type TestCompleteMsg struct {
+	CompletedTest CompletedTest
+}
 
 func (m Model) Update(msg tea.Msg) (tea.Model, tea.Cmd) {
 	switch msg := msg.(type) {
