@@ -15,6 +15,7 @@ type Colours struct {
 	Fg       lipgloss.Color
 	FgSubtle lipgloss.Color
 	Error    lipgloss.Color
+	Primary  lipgloss.Color
 }
 
 var colours = Colours{
@@ -23,6 +24,7 @@ var colours = Colours{
 	Fg:       lipgloss.Color("#313437"),
 	FgSubtle: lipgloss.Color("#AAAEB3"),
 	Error:    lipgloss.Color("#DA3333"),
+	Primary:  lipgloss.Color("#0369a1"),
 }
 
 type modelState = int
