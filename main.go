@@ -47,7 +47,7 @@ type Model struct {
 func initModel() Model {
 	return Model{
 		state: Ready,
-		test:  NewTest("Hello world, this is a really really cool typing test"),
+		test:  NewTest("easy"),
 	}
 }
 
