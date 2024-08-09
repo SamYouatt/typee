@@ -36,6 +36,10 @@ func readyToStartView(m Model) string {
 }
 
 func finishedTestView(m Model) string {
+	if m.completedTest == nil {
+		panic("Shouldn't be trying to render result screen without a completed test")
+	}
+
 	testCompleteStyle := lipgloss.NewStyle().
 		Width(m.width).
 		Height(m.height).
