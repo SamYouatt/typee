@@ -40,14 +40,34 @@ func finishedTestView(m Model) string {
 		panic("Shouldn't be trying to render result screen without a completed test")
 	}
 
+	labelStyle := lipgloss.NewStyle().
+		Background(colours.Bg).
+		Foreground(colours.FgSubtle).
+	    PaddingRight(1)
+
+	statStyle := lipgloss.NewStyle().
+		Background(colours.Bg).
+		Foreground(colours.Primary)
+
+	wpmLabel := labelStyle.Render("wpm")
+	wpmStat := statStyle.Render(fmt.Sprint(m.completedTest.wpm))
+	wpm := lipgloss.JoinHorizontal(lipgloss.Top, wpmLabel, wpmStat)
+
+	timeTakenLabel := labelStyle.Render("time")
+	timeTakenStat := statStyle.Render(fmt.Sprintf("%.2fs", m.completedTest.timeTaken.Seconds()))
+	timeTaken := lipgloss.JoinHorizontal(lipgloss.Top, timeTakenLabel, timeTakenStat)
+
+	stats := lipgloss.JoinHorizontal(lipgloss.Top, wpm, timeTaken)
+
 	testCompleteStyle := lipgloss.NewStyle().
-		Width(m.width).
-		Height(m.height).
 		Background(colours.Bg).
 		Foreground(colours.Fg).
 		Align(lipgloss.Center, lipgloss.Center)
+	testComplete := testCompleteStyle.Render("Test complete! 🎉")
 
-	return testCompleteStyle.Render("Test complete! 🎉")
+	view := lipgloss.JoinVertical(lipgloss.Center, stats, testComplete)
+
+	return lipgloss.Place(m.width, m.height, lipgloss.Center, lipgloss.Center, view, lipgloss.WithWhitespaceBackground(colours.Bg))
 }
 
 func (test Test) renderTest(width int) string {

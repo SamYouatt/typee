@@ -9,6 +9,7 @@ type Stopwatch struct {
 
 func (s *Stopwatch) Start() {
 	s.startTime = time.Now()
+	s.started = true
 }
 
 func (s *Stopwatch) ElapsedTime() time.Duration {
