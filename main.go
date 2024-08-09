@@ -41,6 +41,7 @@ type Model struct {
 	height int
 
 	test *Test
+	completedTest *CompletedTest
 }
 
 func initModel() Model {
@@ -55,7 +56,7 @@ func (m Model) Init() tea.Cmd {
 }
 
 type TestCompleteMsg struct {
-	CompletedTest CompletedTest
+	completedTest CompletedTest
 }
 
 func (m Model) Update(msg tea.Msg) (tea.Model, tea.Cmd) {
@@ -78,8 +79,12 @@ func (m Model) Update(msg tea.Msg) (tea.Model, tea.Cmd) {
 		}
 
 		if len(msg.String()) == 1 {
-			cmd := m.test.PlayCharacter(msg.String()[0])
-			return m, cmd
+			if m.test.PlayCharacter(msg.String()[0]) {
+				m.completedTest = m.test.CompleteTest()
+				m.test = nil
+			}
+            
+			return m, nil
 		}
 
 	case tea.WindowSizeMsg:
