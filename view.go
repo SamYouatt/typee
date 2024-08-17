@@ -2,38 +2,80 @@ package main
 
 import (
 	"fmt"
+	"math/rand"
 	"slices"
 
+	"github.com/NimbleMarkets/ntcharts/canvas"
+	"github.com/NimbleMarkets/ntcharts/linechart"
 	"github.com/charmbracelet/lipgloss"
 )
 
 func readyToStartView(m Model) string {
-	headerTextStyle := lipgloss.NewStyle().
-		Width(m.width).
-		Background(colours.Bg).
-		Foreground(colours.Primary).
-		Align(lipgloss.Center, lipgloss.Center)
-	headerTextRaw := `
-░▒▓████████▓▒░▒▓█▓▒░░▒▓█▓▒░▒▓███████▓▒░░▒▓████████▓▒░▒▓████████▓▒░ 
-   ░▒▓█▓▒░   ░▒▓█▓▒░░▒▓█▓▒░▒▓█▓▒░░▒▓█▓▒░▒▓█▓▒░      ░▒▓█▓▒░        
-   ░▒▓█▓▒░    ░▒▓██████▓▒░░▒▓███████▓▒░░▒▓██████▓▒░ ░▒▓██████▓▒░   
-   ░▒▓█▓▒░      ░▒▓█▓▒░   ░▒▓█▓▒░      ░▒▓█▓▒░      ░▒▓█▓▒░        
-   ░▒▓█▓▒░      ░▒▓█▓▒░   ░▒▓█▓▒░      ░▒▓████████▓▒░▒▓████████▓▒░ 
-`
-	headerText := headerTextStyle.Render(headerTextRaw)
+	axisStyle := lipgloss.NewStyle().Foreground(colours.Fg)
+	lineStyle := lipgloss.NewStyle().Foreground(colours.Primary)
+	backgroundStyle := lipgloss.NewStyle().Foreground(colours.Fg)
 
-	instructionTextStyle := lipgloss.NewStyle().
-		Width(m.width).
-		PaddingTop(1).
-		Background(colours.Bg).
-		Foreground(colours.Fg).
-		Align(lipgloss.Center, lipgloss.Center)
-	instructionText := instructionTextStyle.Render("Press Enter to start")
+	// seed some random values
+	yCoords := make([]int, 50)
+	for i := 0; i < len(yCoords); i++ {
+		yCoords[i] = rand.Intn(30) + 90
+	}
 
-	joined := lipgloss.JoinVertical(lipgloss.Center, headerText, instructionText)
+	// set up the chart
+	chart := linechart.New(80, 10,
+		0, float64(len(yCoords)),
+		0, float64(slices.Max(yCoords)),
+		linechart.WithXYSteps(1, 1),
+		linechart.WithStyles(axisStyle, axisStyle, backgroundStyle))
+	chart.AxisStyle = axisStyle
+	chart.LabelStyle = axisStyle
+	chart.DrawXYAxisAndLabel()
 
-	return lipgloss.Place(m.width, m.height, lipgloss.Center, lipgloss.Center, joined, lipgloss.WithWhitespaceBackground(colours.Bg))
+	// draw the points to the chart
+	for i := 0; i < len(yCoords)-1; i++ {
+		y1 := yCoords[i]
+		y2 := yCoords[i+1]
+		coord1 := canvas.Float64Point{X: float64(i), Y: float64(y1)}
+		coord2 := canvas.Float64Point{X: float64(i + 1), Y: float64(y2)}
+		chart.DrawBrailleLineWithStyle(coord1, coord2, lineStyle)
+	}
+
+	// render the chart
+	titleStyle := lipgloss.NewStyle().Foreground(colours.Primary).PaddingBottom(1)
+	axisLabelStyle := lipgloss.NewStyle().Foreground(colours.FgSubtle).PaddingLeft(3)
+
+	chartRendered := lipgloss.JoinVertical(lipgloss.Left, titleStyle.Render("wpm"), chart.View(), axisLabelStyle.Render("words"))
+
+	return lipgloss.Place(m.width, m.height, lipgloss.Center, lipgloss.Center, chartRendered)
 }
+
+// func readyToStartView(m Model) string {
+// 	headerTextStyle := lipgloss.NewStyle().
+// 		Width(m.width).
+// 		Background(colours.Bg).
+// 		Foreground(colours.Primary).
+// 		Align(lipgloss.Center, lipgloss.Center)
+// 	headerTextRaw := `
+// ░▒▓████████▓▒░▒▓█▓▒░░▒▓█▓▒░▒▓███████▓▒░░▒▓████████▓▒░▒▓████████▓▒░
+//    ░▒▓█▓▒░   ░▒▓█▓▒░░▒▓█▓▒░▒▓█▓▒░░▒▓█▓▒░▒▓█▓▒░      ░▒▓█▓▒░
+//    ░▒▓█▓▒░    ░▒▓██████▓▒░░▒▓███████▓▒░░▒▓██████▓▒░ ░▒▓██████▓▒░
+//    ░▒▓█▓▒░      ░▒▓█▓▒░   ░▒▓█▓▒░      ░▒▓█▓▒░      ░▒▓█▓▒░
+//    ░▒▓█▓▒░      ░▒▓█▓▒░   ░▒▓█▓▒░      ░▒▓████████▓▒░▒▓████████▓▒░
+// `
+// 	headerText := headerTextStyle.Render(headerTextRaw)
+//
+// 	instructionTextStyle := lipgloss.NewStyle().
+// 		Width(m.width).
+// 		PaddingTop(1).
+// 		Background(colours.Bg).
+// 		Foreground(colours.Fg).
+// 		Align(lipgloss.Center, lipgloss.Center)
+// 	instructionText := instructionTextStyle.Render("Press Enter to start")
+//
+// 	joined := lipgloss.JoinVertical(lipgloss.Center, headerText, instructionText)
+//
+// 	return lipgloss.Place(m.width, m.height, lipgloss.Center, lipgloss.Center, joined, lipgloss.WithWhitespaceBackground(colours.Bg))
+// }
 
 func finishedTestView(m Model) string {
 	if m.completedTest == nil {
@@ -43,7 +85,7 @@ func finishedTestView(m Model) string {
 	labelStyle := lipgloss.NewStyle().
 		Background(colours.Bg).
 		Foreground(colours.FgSubtle).
-	    PaddingRight(1)
+		PaddingRight(1)
 
 	statStyle := lipgloss.NewStyle().
 		Background(colours.Bg).
