@@ -29,9 +29,9 @@ var colours = Colours{
 type modelState = int
 
 const (
-	Ready modelState = iota
-	InTest
-	TestComplete
+	Ready modelState = 1
+	InTest = 2
+	TestComplete = 3
 )
 
 type Model struct {
