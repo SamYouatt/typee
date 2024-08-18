@@ -6,9 +6,11 @@ import (
 
 	"github.com/NimbleMarkets/ntcharts/canvas"
 	"github.com/NimbleMarkets/ntcharts/linechart"
-	"github.com/SamYouatt/typee/features/practice"
+	"github.com/SamYouatt/typee/util"
 	"github.com/charmbracelet/lipgloss"
 )
+
+var colours = util.AppColours
 
 func renderGraph(m Model) string {
 	axisStyle := lipgloss.NewStyle().Foreground(colours.Fg)
@@ -16,7 +18,7 @@ func renderGraph(m Model) string {
 	backgroundStyle := lipgloss.NewStyle().Foreground(colours.Fg)
 
 	width, height := 80, 10
-	yCoords := m.completedTest.runningWpm
+	yCoords := m.result.RunningWpm
 	minX, maxX := 0.0, float64(len(yCoords))
 	minY, maxY := 0.0, float64(slices.Max(yCoords))
 
@@ -71,7 +73,7 @@ func readyToStartView(m Model) string {
 }
 
 func finishedTestView(m Model) string {
-	if m.completedTest == nil {
+	if m.result == nil {
 		panic("Shouldn't be trying to render result screen without a completed test")
 	}
 
@@ -85,11 +87,11 @@ func finishedTestView(m Model) string {
 		Foreground(colours.Primary)
 
 	wpmLabel := labelStyle.Render("wpm")
-	wpmStat := statStyle.Render(fmt.Sprint(m.completedTest.wpm))
+	wpmStat := statStyle.Render(fmt.Sprint(m.result.Wpm))
 	wpm := lipgloss.JoinHorizontal(lipgloss.Top, wpmLabel, wpmStat)
 
 	timeTakenLabel := labelStyle.Render("time")
-	timeTakenStat := statStyle.Render(fmt.Sprintf("%.2fs", m.completedTest.timeTaken.Seconds()))
+	timeTakenStat := statStyle.Render(fmt.Sprintf("%.2fs", m.result.TimeTaken.Seconds()))
 	timeTaken := lipgloss.JoinHorizontal(lipgloss.Top, timeTakenLabel, timeTakenStat)
 
 	stats := lipgloss.JoinHorizontal(lipgloss.Top, wpm, timeTaken)
@@ -103,7 +105,6 @@ func finishedTestView(m Model) string {
 	view := lipgloss.JoinVertical(lipgloss.Center, stats, testComplete, renderGraph(m))
 
 	return lipgloss.Place(m.width, m.height, lipgloss.Center, lipgloss.Center, view, lipgloss.WithWhitespaceBackground(colours.Bg))
-
 }
 
 func testView(m Model) string {
