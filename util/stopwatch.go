@@ -19,3 +19,7 @@ func (s *Stopwatch) ElapsedTime() time.Duration {
 
 	return time.Since(s.startTime)
 }
+
+func (s *Stopwatch) IsRunning() bool {
+	return s.started
+}
