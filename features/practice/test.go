@@ -1,8 +1,11 @@
-package main
+package practice
 
 import (
 	"math"
 	"strings"
+
+	"github.com/SamYouatt/typee/util"
+	"github.com/SamYouatt/typee/domain"
 )
 
 type Test struct {
@@ -20,11 +23,11 @@ type Test struct {
 	runningWpm []int
 
 	complete  bool
-	stopwatch Stopwatch
+	stopwatch util.Stopwatch
 }
 
 func NewTest(testText string) *Test {
-	stopwatch := Stopwatch{}
+	stopwatch := util.Stopwatch{}
 	numWords := len(strings.Fields(testText))
 
 	return &Test{
@@ -62,9 +65,7 @@ func (test *Test) playSpace() {
 	test.completedWords++
 	test.currentIndex++
 
-	timeTaken := test.stopwatch.ElapsedTime()
-	wpm := CalculateWpm(test.completedWords, timeTaken)
-	test.runningWpm = append(test.runningWpm, wpm)
+	test.runningWpm = append(test.runningWpm, test.CalculateWpm())
 
 	return
 }
@@ -74,7 +75,7 @@ func (test *Test) playCharacter(char byte) (completed bool) {
 		return true
 	}
 
-	if !test.stopwatch.started {
+	if !test.stopwatch.IsRunning() {
 		test.stopwatch.Start()
 	}
 
@@ -112,5 +113,24 @@ func (test *Test) PlayInput(input string) (completed bool) {
 		return false
 	default:
 		return test.playCharacter(input[0])
+	}
+}
+
+func (test *Test) CalculateWpm() int {
+	timeTaken := test.stopwatch.ElapsedTime()
+	wpm := util.CalculateWpm(test.completedWords, timeTaken)
+
+	return wpm
+}
+
+func (t *Test) CompleteTest() *domain.Result {
+	timeTaken := t.stopwatch.ElapsedTime()
+	wpm := t.CalculateWpm()
+
+	return &domain.Result{
+		NumWords:   t.numWords,
+		TimeTaken:  timeTaken,
+		Wpm:        wpm,
+		RunningWpm: t.runningWpm,
 	}
 }
