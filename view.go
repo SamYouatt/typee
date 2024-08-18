@@ -10,7 +10,7 @@ import (
 	"github.com/charmbracelet/lipgloss"
 )
 
-func readyToStartView(m Model) string {
+func renderGraph(m Model) string {
 	axisStyle := lipgloss.NewStyle().Foreground(colours.Fg)
 	lineStyle := lipgloss.NewStyle().Foreground(colours.Primary)
 	backgroundStyle := lipgloss.NewStyle().Foreground(colours.Fg)
@@ -44,38 +44,36 @@ func readyToStartView(m Model) string {
 	titleStyle := lipgloss.NewStyle().Foreground(colours.Primary).PaddingBottom(1)
 	axisLabelStyle := lipgloss.NewStyle().Foreground(colours.FgSubtle).PaddingLeft(3)
 
-	chartRendered := lipgloss.JoinVertical(lipgloss.Left, titleStyle.Render("wpm"), chart.View(), axisLabelStyle.Render("words"))
-
-	return lipgloss.Place(m.width, m.height, lipgloss.Center, lipgloss.Center, chartRendered)
+	return lipgloss.JoinVertical(lipgloss.Left, titleStyle.Render("wpm"), chart.View(), axisLabelStyle.Render("words"))
 }
 
-// func readyToStartView(m Model) string {
-// 	headerTextStyle := lipgloss.NewStyle().
-// 		Width(m.width).
-// 		Background(colours.Bg).
-// 		Foreground(colours.Primary).
-// 		Align(lipgloss.Center, lipgloss.Center)
-// 	headerTextRaw := `
-// ░▒▓████████▓▒░▒▓█▓▒░░▒▓█▓▒░▒▓███████▓▒░░▒▓████████▓▒░▒▓████████▓▒░
-//    ░▒▓█▓▒░   ░▒▓█▓▒░░▒▓█▓▒░▒▓█▓▒░░▒▓█▓▒░▒▓█▓▒░      ░▒▓█▓▒░
-//    ░▒▓█▓▒░    ░▒▓██████▓▒░░▒▓███████▓▒░░▒▓██████▓▒░ ░▒▓██████▓▒░
-//    ░▒▓█▓▒░      ░▒▓█▓▒░   ░▒▓█▓▒░      ░▒▓█▓▒░      ░▒▓█▓▒░
-//    ░▒▓█▓▒░      ░▒▓█▓▒░   ░▒▓█▓▒░      ░▒▓████████▓▒░▒▓████████▓▒░
-// `
-// 	headerText := headerTextStyle.Render(headerTextRaw)
-//
-// 	instructionTextStyle := lipgloss.NewStyle().
-// 		Width(m.width).
-// 		PaddingTop(1).
-// 		Background(colours.Bg).
-// 		Foreground(colours.Fg).
-// 		Align(lipgloss.Center, lipgloss.Center)
-// 	instructionText := instructionTextStyle.Render("Press Enter to start")
-//
-// 	joined := lipgloss.JoinVertical(lipgloss.Center, headerText, instructionText)
-//
-// 	return lipgloss.Place(m.width, m.height, lipgloss.Center, lipgloss.Center, joined, lipgloss.WithWhitespaceBackground(colours.Bg))
-// }
+func readyToStartView(m Model) string {
+	headerTextStyle := lipgloss.NewStyle().
+		Width(m.width).
+		Background(colours.Bg).
+		Foreground(colours.Primary).
+		Align(lipgloss.Center, lipgloss.Center)
+	headerTextRaw := `
+░▒▓████████▓▒░▒▓█▓▒░░▒▓█▓▒░▒▓███████▓▒░░▒▓████████▓▒░▒▓████████▓▒░ 
+   ░▒▓█▓▒░   ░▒▓█▓▒░░▒▓█▓▒░▒▓█▓▒░░▒▓█▓▒░▒▓█▓▒░      ░▒▓█▓▒░        
+   ░▒▓█▓▒░    ░▒▓██████▓▒░░▒▓███████▓▒░░▒▓██████▓▒░ ░▒▓██████▓▒░   
+   ░▒▓█▓▒░      ░▒▓█▓▒░   ░▒▓█▓▒░      ░▒▓█▓▒░      ░▒▓█▓▒░        
+   ░▒▓█▓▒░      ░▒▓█▓▒░   ░▒▓█▓▒░      ░▒▓████████▓▒░▒▓████████▓▒░ 
+`
+	headerText := headerTextStyle.Render(headerTextRaw)
+
+	instructionTextStyle := lipgloss.NewStyle().
+		Width(m.width).
+		PaddingTop(1).
+		Background(colours.Bg).
+		Foreground(colours.Fg).
+		Align(lipgloss.Center, lipgloss.Center)
+	instructionText := instructionTextStyle.Render("Press Enter to start")
+
+	joined := lipgloss.JoinVertical(lipgloss.Center, headerText, instructionText)
+
+	return lipgloss.Place(m.width, m.height, lipgloss.Center, lipgloss.Center, joined, lipgloss.WithWhitespaceBackground(colours.Bg))
+}
 
 func finishedTestView(m Model) string {
 	if m.completedTest == nil {
@@ -107,7 +105,7 @@ func finishedTestView(m Model) string {
 		Align(lipgloss.Center, lipgloss.Center)
 	testComplete := testCompleteStyle.Render("Test complete! 🎉")
 
-	view := lipgloss.JoinVertical(lipgloss.Center, stats, testComplete)
+	view := lipgloss.JoinVertical(lipgloss.Center, stats, testComplete, renderGraph(m))
 
 	return lipgloss.Place(m.width, m.height, lipgloss.Center, lipgloss.Center, view, lipgloss.WithWhitespaceBackground(colours.Bg))
 }
