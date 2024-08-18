@@ -64,9 +64,7 @@ func (test *Test) playSpace() {
 	test.completedWords++
 	test.currentIndex++
 
-	timeTaken := test.stopwatch.ElapsedTime()
-	wpm := util.CalculateWpm(test.completedWords, timeTaken)
-	test.runningWpm = append(test.runningWpm, wpm)
+	test.runningWpm = append(test.runningWpm, test.CalculateWpm())
 
 	return
 }
@@ -115,4 +113,11 @@ func (test *Test) PlayInput(input string) (completed bool) {
 	default:
 		return test.playCharacter(input[0])
 	}
+}
+
+func (test *Test) CalculateWpm() int {
+	timeTaken := test.stopwatch.ElapsedTime()
+	wpm := util.CalculateWpm(test.completedWords, timeTaken)
+
+	return wpm
 }
