@@ -69,8 +69,7 @@ func (test *Test) playSpace() {
 	return
 }
 
-// Returns true when the test has been completed
-func (test *Test) playCharacter(char byte) bool {
+func (test *Test) playCharacter(char byte) (completed bool) {
 	if test.complete {
 		return true
 	}
@@ -103,13 +102,15 @@ func (test *Test) playCharacter(char byte) bool {
 	return false
 }
 
-func (test *Test) PlayInput(input string) (testComplete bool) {
+func (test *Test) PlayInput(input string) (completed bool) {
 	switch input {
 	case " ":
 		test.playSpace()
+		return false
 	case "backspace":
 		test.playBackspace()
+		return false
+	default:
+		return test.playCharacter(input[0])
 	}
-
-	return test.playCharacter(input[0])
 }

@@ -61,12 +61,6 @@ func (m Model) Update(msg tea.Msg) (tea.Model, tea.Cmd) {
 		switch msg.String() {
 		case "ctrl+c":
 			return m, tea.Quit
-		case " ":
-			m.test.PlaySpace()
-			return m, nil
-		case "backspace":
-			m.test.PlayBackspace()
-			return m, nil
 		case "enter":
 			if m.state == Ready {
 				m.state = InTest
@@ -74,15 +68,13 @@ func (m Model) Update(msg tea.Msg) (tea.Model, tea.Cmd) {
 			}
 		}
 
-		if len(msg.String()) == 1 {
-			if m.test.PlayCharacter(msg.String()[0]) {
-				m.completedTest = m.test.CompleteTest()
-				m.test = nil
-				m.state = TestComplete
-			}
-
-			return m, nil
+		if m.test.PlayInput(msg.String()) {
+			m.completedTest = m.test.CompleteTest()
+			m.test = nil
+			m.state = TestComplete
 		}
+
+		return m, nil
 
 	case tea.WindowSizeMsg:
 		m.width = msg.Width
