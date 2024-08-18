@@ -40,7 +40,7 @@ func NewTest(testText string) *Test {
 	}
 }
 
-func (test *Test) PlayBackspace() {
+func (test *Test) playBackspace() {
 	if test.complete || !test.currentlyInvalid {
 		return
 	}
@@ -48,7 +48,7 @@ func (test *Test) PlayBackspace() {
 	test.currentlyInvalid = false
 }
 
-func (test *Test) PlaySpace() {
+func (test *Test) playSpace() {
 	if test.complete {
 		return
 	}
@@ -70,7 +70,7 @@ func (test *Test) PlaySpace() {
 }
 
 // Returns true when the test has been completed
-func (test *Test) PlayCharacter(char byte) bool {
+func (test *Test) playCharacter(char byte) bool {
 	if test.complete {
 		return true
 	}
@@ -101,4 +101,15 @@ func (test *Test) PlayCharacter(char byte) bool {
 	}
 
 	return false
+}
+
+func (test *Test) PlayInput(input string) (testComplete bool) {
+	switch input {
+	case " ":
+		test.playSpace()
+	case "backspace":
+		test.playBackspace()
+	}
+
+	return test.playCharacter(input[0])
 }
