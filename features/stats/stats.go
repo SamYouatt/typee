@@ -1,6 +1,7 @@
 package stats
 
 import (
+	"fmt"
 	"slices"
 
 	"github.com/NimbleMarkets/ntcharts/canvas"
@@ -12,7 +13,7 @@ import (
 
 var colours = util.AppColours
 
-func RenderGraph(result *domain.Result) string {
+func renderGraph(result *domain.Result) string {
 	axisStyle := lipgloss.NewStyle().Foreground(colours.Fg)
 	lineStyle := lipgloss.NewStyle().Foreground(colours.Primary)
 	backgroundStyle := lipgloss.NewStyle().Foreground(colours.Fg)
@@ -42,4 +43,39 @@ func RenderGraph(result *domain.Result) string {
 	titleStyle := lipgloss.NewStyle().Foreground(colours.Primary).PaddingBottom(1)
 	axisLabelStyle := lipgloss.NewStyle().Foreground(colours.FgSubtle).PaddingLeft(3)
 	return lipgloss.JoinVertical(lipgloss.Left, titleStyle.Render("wpm"), chart.View(), axisLabelStyle.Render("words"))
+}
+
+func View(result *domain.Result, width, height int) string {
+	if result == nil {
+		panic("Shouldn't be trying to render result screen without a completed test")
+	}
+
+	labelStyle := lipgloss.NewStyle().
+		Background(colours.Bg).
+		Foreground(colours.FgSubtle).
+		PaddingRight(1)
+
+	statStyle := lipgloss.NewStyle().
+		Background(colours.Bg).
+		Foreground(colours.Primary)
+
+	wpmLabel := labelStyle.Render("wpm")
+	wpmStat := statStyle.Render(fmt.Sprint(result.Wpm))
+	wpm := lipgloss.JoinHorizontal(lipgloss.Top, wpmLabel, wpmStat)
+
+	timeTakenLabel := labelStyle.Render("time")
+	timeTakenStat := statStyle.Render(fmt.Sprintf("%.2fs", result.TimeTaken.Seconds()))
+	timeTaken := lipgloss.JoinHorizontal(lipgloss.Top, timeTakenLabel, timeTakenStat)
+
+	testStats := lipgloss.JoinHorizontal(lipgloss.Top, wpm, timeTaken)
+
+	testCompleteStyle := lipgloss.NewStyle().
+		Background(colours.Bg).
+		Foreground(colours.Fg).
+		Align(lipgloss.Center, lipgloss.Center)
+	testComplete := testCompleteStyle.Render("Test complete! 🎉")
+
+	view := lipgloss.JoinVertical(lipgloss.Center, testStats, testComplete, renderGraph(result))
+
+	return lipgloss.Place(width, height, lipgloss.Center, lipgloss.Center, view, lipgloss.WithWhitespaceBackground(colours.Bg))
 }
