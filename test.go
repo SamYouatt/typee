@@ -25,7 +25,6 @@ type Test struct {
 
 func NewTest(testText string) *Test {
 	stopwatch := Stopwatch{}
-	stopwatch.Start()
 	numWords := len(strings.Fields(testText))
 
 	return &Test{
@@ -73,7 +72,11 @@ func (test *Test) PlaySpace() {
 // Returns true when the test has been completed
 func (test *Test) PlayCharacter(char byte) bool {
 	if test.complete {
-		return false
+		return true
+	}
+
+	if !test.stopwatch.started {
+		test.stopwatch.Start()
 	}
 
 	if test.currentlyInvalid {
