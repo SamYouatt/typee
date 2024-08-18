@@ -8,7 +8,6 @@ import (
 	"github.com/SamYouatt/typee/features/practice"
 
 	tea "github.com/charmbracelet/bubbletea"
-	"github.com/charmbracelet/lipgloss"
 )
 
 

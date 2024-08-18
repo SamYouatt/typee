@@ -1,6 +1,7 @@
 package practice
 
 import (
+	"fmt"
 	"slices"
 
 	"github.com/SamYouatt/typee/util"
@@ -9,7 +10,18 @@ import (
 
 var colours = util.AppColours
 
-func (test Test) RenderTest(width int) string {
+func (test Test) renderTestProgress() string {
+	testViewWidth := min(80, len(test.text))
+	testProgressStyle := lipgloss.NewStyle().
+		Width(testViewWidth).
+		Foreground(colours.Fg).
+		Background(colours.Bg).
+		AlignHorizontal(lipgloss.Left)
+
+	return testProgressStyle.Render(fmt.Sprintf("%d/%d", test.completedWords, test.numWords))
+}
+
+func (test Test) renderTest(width int) string {
 	untypedStyle := lipgloss.NewStyle().
 		Foreground(colours.FgSubtle).
 		Background(colours.Bg)
@@ -65,4 +77,12 @@ func (test Test) RenderTest(width int) string {
 		Background(colours.Bg)
 
 	return viewStyle.Render(testRendered)
+}
+
+func (test Test) View(width, height int) string {
+    testProgress := test.renderTestProgress()
+	testBody := test.renderTest(80)
+
+	view := lipgloss.JoinVertical(lipgloss.Center, testProgress, testBody)
+	return lipgloss.Place(width, height, lipgloss.Center, lipgloss.Center, view, lipgloss.WithWhitespaceBackground(colours.Bg))
 }
