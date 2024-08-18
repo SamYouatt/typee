@@ -8,13 +8,13 @@ import (
 func TestStopwatch_OnlyStartsOnFirstInput(t *testing.T) {
 	test := NewTest("Test")
 
-	if test.stopwatch.started {
+	if test.stopwatch.IsRunning() {
 		t.Errorf("Expected stopwatch to be stopped until first input")
 	}
 
 	test.playCharacter('T')
 
-	if !test.stopwatch.started {
+	if !test.stopwatch.IsRunning() {
 		t.Errorf("Expected stopwatch to be running after first input")
 	}
 }

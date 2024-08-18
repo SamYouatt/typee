@@ -3,6 +3,8 @@ package practice
 import (
 	"math"
 	"strings"
+
+	"github.com/SamYouatt/typee/util"
 )
 
 type Test struct {
@@ -20,11 +22,11 @@ type Test struct {
 	runningWpm []int
 
 	complete  bool
-	stopwatch Stopwatch
+	stopwatch util.Stopwatch
 }
 
 func NewTest(testText string) *Test {
-	stopwatch := Stopwatch{}
+	stopwatch := util.Stopwatch{}
 	numWords := len(strings.Fields(testText))
 
 	return &Test{
@@ -63,7 +65,7 @@ func (test *Test) playSpace() {
 	test.currentIndex++
 
 	timeTaken := test.stopwatch.ElapsedTime()
-	wpm := CalculateWpm(test.completedWords, timeTaken)
+	wpm := util.CalculateWpm(test.completedWords, timeTaken)
 	test.runningWpm = append(test.runningWpm, wpm)
 
 	return
@@ -74,7 +76,7 @@ func (test *Test) playCharacter(char byte) (completed bool) {
 		return true
 	}
 
-	if !test.stopwatch.started {
+	if !test.stopwatch.IsRunning() {
 		test.stopwatch.Start()
 	}
 
