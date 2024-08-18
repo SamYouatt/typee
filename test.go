@@ -1,6 +1,7 @@
 package main
 
 import (
+	"math"
 	"strings"
 )
 
@@ -11,8 +12,15 @@ type Test struct {
 	currentIndex     int
 	currentlyInvalid bool
 	errorIndices     []int
-	complete         bool
-	stopwatch        Stopwatch
+
+	// time in second an error occured
+	errorTimes []int
+
+	// wpm calculated after each word completion
+	runningWpm []int
+
+	complete  bool
+	stopwatch Stopwatch
 }
 
 func NewTest(testText string) *Test {
@@ -27,6 +35,7 @@ func NewTest(testText string) *Test {
 		currentIndex:     0,
 		currentlyInvalid: false,
 		errorIndices:     []int{},
+		errorTimes:       []int{},
 		complete:         false,
 		stopwatch:        stopwatch,
 	}
@@ -45,13 +54,20 @@ func (test *Test) PlaySpace() {
 		return
 	}
 
-	if test.text[test.currentIndex] == ' ' {
-		test.completedWords++
-		test.currentIndex++
-	} else {
+	if test.text[test.currentIndex] != ' ' {
 		test.errorIndices = append(test.errorIndices, test.currentIndex)
 		test.currentlyInvalid = true
+		return
 	}
+
+	test.completedWords++
+	test.currentIndex++
+
+	timeTaken := test.stopwatch.ElapsedTime()
+	wpm := CalculateWpm(test.completedWords, timeTaken)
+	test.runningWpm = append(test.runningWpm, wpm)
+
+	return
 }
 
 // Returns true when the test has been completed
@@ -73,7 +89,11 @@ func (test *Test) PlayCharacter(char byte) bool {
 			test.currentIndex++
 		}
 	} else {
+		currentElapsedSecs := test.stopwatch.ElapsedTime().Seconds()
+		errorOccurredAt := int(math.Round(currentElapsedSecs))
+
 		test.errorIndices = append(test.errorIndices, test.currentIndex)
+		test.errorTimes = append(test.errorTimes, errorOccurredAt)
 		test.currentlyInvalid = true
 	}
 
