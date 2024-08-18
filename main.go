@@ -29,9 +29,9 @@ var colours = Colours{
 type modelState = int
 
 const (
-	Ready modelState = 1
-	InTest = 2
-	TestComplete = 3
+	Ready        modelState = 1
+	InTest                  = 2
+	TestComplete            = 3
 )
 
 type Model struct {
@@ -40,14 +40,14 @@ type Model struct {
 	width  int
 	height int
 
-	test *Test
+	test          *Test
 	completedTest *CompletedTest
 }
 
 func initModel() Model {
 	return Model{
 		state: Ready,
-		test:  NewTest("easy"),
+		test:  NewTest("blue red fast slow kind strong quick brown light dark happy smart quiet loud sleep"),
 	}
 }
 
@@ -80,7 +80,7 @@ func (m Model) Update(msg tea.Msg) (tea.Model, tea.Cmd) {
 				m.test = nil
 				m.state = TestComplete
 			}
-            
+
 			return m, nil
 		}
 

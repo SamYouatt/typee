@@ -2,7 +2,6 @@ package main
 
 import (
 	"fmt"
-	"math/rand"
 	"slices"
 
 	"github.com/NimbleMarkets/ntcharts/canvas"
@@ -15,23 +14,20 @@ func renderGraph(m Model) string {
 	lineStyle := lipgloss.NewStyle().Foreground(colours.Primary)
 	backgroundStyle := lipgloss.NewStyle().Foreground(colours.Fg)
 
-	// seed some random values
-	yCoords := make([]int, 50)
-	for i := 0; i < len(yCoords); i++ {
-		yCoords[i] = rand.Intn(30) + 90
-	}
+	width, height := 80, 10
+	yCoords := m.completedTest.runningWpm
+	minX, maxX := 0.0, float64(len(yCoords))
+	minY, maxY := 0.0, float64(slices.Max(yCoords))
 
-	// set up the chart
-	chart := linechart.New(80, 10,
-		0, float64(len(yCoords)),
-		0, float64(slices.Max(yCoords)),
+	chart := linechart.New(width, height,
+		minX, maxX,
+		minY, maxY,
 		linechart.WithXYSteps(1, 1),
 		linechart.WithStyles(axisStyle, axisStyle, backgroundStyle))
 	chart.AxisStyle = axisStyle
 	chart.LabelStyle = axisStyle
 	chart.DrawXYAxisAndLabel()
 
-	// draw the points to the chart
 	for i := 0; i < len(yCoords)-1; i++ {
 		y1 := yCoords[i]
 		y2 := yCoords[i+1]
@@ -40,10 +36,8 @@ func renderGraph(m Model) string {
 		chart.DrawBrailleLineWithStyle(coord1, coord2, lineStyle)
 	}
 
-	// render the chart
 	titleStyle := lipgloss.NewStyle().Foreground(colours.Primary).PaddingBottom(1)
 	axisLabelStyle := lipgloss.NewStyle().Foreground(colours.FgSubtle).PaddingLeft(3)
-
 	return lipgloss.JoinVertical(lipgloss.Left, titleStyle.Render("wpm"), chart.View(), axisLabelStyle.Render("words"))
 }
 

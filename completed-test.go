@@ -6,6 +6,8 @@ type CompletedTest struct {
 	numWords  int
 	timeTaken time.Duration
 	wpm       int
+
+    runningWpm []int
 }
 
 func (t *Test) CompleteTest() *CompletedTest {
@@ -16,5 +18,6 @@ func (t *Test) CompleteTest() *CompletedTest {
 		numWords:  t.numWords,
 		timeTaken: timeTaken,
 		wpm:       wpm,
+		runningWpm: t.runningWpm,
 	}
 }
