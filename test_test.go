@@ -39,6 +39,10 @@ func TestPlayCharacter_WithIncorrectCharacter(t *testing.T) {
 	if !test.currentlyInvalid {
 		t.Errorf("Expected to be marked as currently invalid after bad character entry")
 	}
+
+	if len(test.errorTimes) != 1 {
+		t.Errorf("Expected occurence time of error to be added to error times")
+	}
 }
 
 func TestPlaySpace_WhenCorrectAdvancesWordCount(t *testing.T) {
@@ -53,6 +57,17 @@ func TestPlaySpace_WhenCorrectAdvancesWordCount(t *testing.T) {
 
 	if test.completedWords != 1 {
 		t.Errorf("Expected the number of completed words to increase")
+	}
+}
+
+func TestPlaySpace_WhenCorrect_TracksRunningWpm(t *testing.T) {
+	test := NewTest("Test text")
+	test.currentIndex = 4
+
+	test.PlaySpace()
+
+	if len(test.runningWpm) != 1 {
+		t.Errorf("Expected running wpm to be calculated when word was completed")
 	}
 }
 
