@@ -5,6 +5,7 @@ import (
 	"strings"
 
 	"github.com/SamYouatt/typee/util"
+	"github.com/SamYouatt/typee/domain"
 )
 
 type Test struct {
@@ -120,4 +121,16 @@ func (test *Test) CalculateWpm() int {
 	wpm := util.CalculateWpm(test.completedWords, timeTaken)
 
 	return wpm
+}
+
+func (t *Test) CompleteTest() *domain.Result {
+	timeTaken := t.stopwatch.ElapsedTime()
+	wpm := t.CalculateWpm()
+
+	return &domain.Result{
+		NumWords:   t.numWords,
+		TimeTaken:  timeTaken,
+		Wpm:        wpm,
+		RunningWpm: t.runningWpm,
+	}
 }
