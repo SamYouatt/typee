@@ -24,7 +24,7 @@ type Model struct {
 	result *domain.Result
 }
 
-func initModel() Model {
+func InitModel() Model {
 	return Model{
 		state: Ready,
 		test:  practice.NewTest("blue red fast slow kind strong quick brown light dark happy smart quiet loud sleep"),
