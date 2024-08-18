@@ -5,11 +5,17 @@ import (
 	"testing"
 )
 
-func NewTest_StartsStopwatch(t *testing.T) {
+func TestStopwatch_OnlyStartsOnFirstInput(t *testing.T) {
 	test := NewTest("Test")
 
+	if test.stopwatch.started {
+		t.Errorf("Expected stopwatch to be stopped until first input")
+	}
+
+	test.PlayCharacter('T')
+
 	if !test.stopwatch.started {
-		t.Errorf("Expected stopwatch to be started by creating new test")
+		t.Errorf("Expected stopwatch to be running after first input")
 	}
 }
 
