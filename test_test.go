@@ -53,7 +53,10 @@ func TestPlayCharacter_WithIncorrectCharacter(t *testing.T) {
 
 func TestPlaySpace_WhenCorrectAdvancesWordCount(t *testing.T) {
 	test := NewTest("Test text")
-	test.currentIndex = 4
+	test.PlayCharacter('T')
+	test.PlayCharacter('e')
+	test.PlayCharacter('s')
+	test.PlayCharacter('t')
 
 	test.PlaySpace()
 
@@ -68,7 +71,10 @@ func TestPlaySpace_WhenCorrectAdvancesWordCount(t *testing.T) {
 
 func TestPlaySpace_WhenCorrect_TracksRunningWpm(t *testing.T) {
 	test := NewTest("Test text")
-	test.currentIndex = 4
+	test.PlayCharacter('T')
+	test.PlayCharacter('e')
+	test.PlayCharacter('s')
+	test.PlayCharacter('t')
 
 	test.PlaySpace()
 
