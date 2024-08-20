@@ -27,7 +27,7 @@ type Model struct {
 func InitModel() Model {
 	return Model{
 		state: Ready,
-		test:  practice.NewTest("Apple Banana Carrot Door Elephant Flower Garden House Island Jacket Kite Lemon Mountain Night Ocean People Queen River Street Table Umbrella Victory Window Xylophone Yellow Zebra Animal Basket Cloud Dream Eagle Fire Ghost Honey Igloo Jungle Kitten Ladder Music Notebook Orange Piano"),
+		test:  practice.NewTest(),
 	}
 }
 
