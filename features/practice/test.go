@@ -43,6 +43,19 @@ func NewTest(testText string) *Test {
 	}
 }
 
+func generateTest(length int) string {
+	wordsList := corpus.Enghlish1k()
+
+	testText := wordsList[rand.Intn(len(wordsList))]
+	for i := 0; i < length; i++ {
+		index := rand.Intn(len(wordsList))
+		word := wordsList[index]
+		testText = testText + " " + word
+	}
+
+	return testText
+}
+
 func (test *Test) playBackspace() {
 	if test.complete || !test.currentlyInvalid {
 		return
