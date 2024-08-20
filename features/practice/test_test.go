@@ -5,6 +5,15 @@ import (
 	"testing"
 )
 
+func NewTest_GeneratesRandomisedRuns(t *testing.T) {
+	firstTest := NewTest().text
+	secondTest := NewTest().text
+
+	if firstTest == secondTest {
+		t.Errorf("Expected test to be randomised for each run")
+	}
+}
+
 func TestStopwatch_OnlyStartsOnFirstInput(t *testing.T) {
 	test := NewTest()
 	test.text = "Test text"
