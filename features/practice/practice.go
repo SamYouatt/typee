@@ -2,10 +2,12 @@ package practice
 
 import (
 	"math"
+	"math/rand"
 	"strings"
 
-	"github.com/SamYouatt/typee/util"
+	"github.com/SamYouatt/typee/corpus"
 	"github.com/SamYouatt/typee/domain"
+	"github.com/SamYouatt/typee/util"
 )
 
 type Test struct {
@@ -26,8 +28,11 @@ type Test struct {
 	stopwatch util.Stopwatch
 }
 
-func NewTest(testText string) *Test {
+func NewTest() *Test {
 	stopwatch := util.Stopwatch{}
+
+	testText := generateTest(15)
+
 	numWords := len(strings.Fields(testText))
 
 	return &Test{
@@ -41,6 +46,19 @@ func NewTest(testText string) *Test {
 		complete:         false,
 		stopwatch:        stopwatch,
 	}
+}
+
+func generateTest(length int) string {
+	wordsList := corpus.Enghlish1k()
+
+	testText := wordsList[rand.Intn(len(wordsList))]
+	for i := 0; i < length; i++ {
+		index := rand.Intn(len(wordsList))
+		word := wordsList[index]
+		testText = testText + " " + word
+	}
+
+	return testText
 }
 
 func (test *Test) playBackspace() {

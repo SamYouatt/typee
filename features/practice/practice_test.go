@@ -5,8 +5,18 @@ import (
 	"testing"
 )
 
+func NewTest_GeneratesRandomisedRuns(t *testing.T) {
+	firstTest := NewTest().text
+	secondTest := NewTest().text
+
+	if firstTest == secondTest {
+		t.Errorf("Expected test to be randomised for each run")
+	}
+}
+
 func TestStopwatch_OnlyStartsOnFirstInput(t *testing.T) {
-	test := NewTest("Test")
+	test := NewTest()
+	test.text = "Test text"
 
 	if test.stopwatch.IsRunning() {
 		t.Errorf("Expected stopwatch to be stopped until first input")
@@ -20,7 +30,8 @@ func TestStopwatch_OnlyStartsOnFirstInput(t *testing.T) {
 }
 
 func TestPlayCharacter_WithCorrectCharacter(t *testing.T) {
-	test := NewTest("Test text")
+	test := NewTest()
+	test.text = "Test text"
 
 	test.playCharacter('T')
 
@@ -30,7 +41,8 @@ func TestPlayCharacter_WithCorrectCharacter(t *testing.T) {
 }
 
 func TestPlayCharacter_WithIncorrectCharacter(t *testing.T) {
-	test := NewTest("Test text")
+	test := NewTest()
+	test.text = "Test text"
 
 	test.playCharacter('x')
 
@@ -52,7 +64,8 @@ func TestPlayCharacter_WithIncorrectCharacter(t *testing.T) {
 }
 
 func TestPlaySpace_WhenCorrectAdvancesWordCount(t *testing.T) {
-	test := NewTest("Test text")
+	test := NewTest()
+	test.text = "Test text"
 	test.playCharacter('T')
 	test.playCharacter('e')
 	test.playCharacter('s')
@@ -70,7 +83,8 @@ func TestPlaySpace_WhenCorrectAdvancesWordCount(t *testing.T) {
 }
 
 func TestPlaySpace_WhenCorrect_TracksRunningWpm(t *testing.T) {
-	test := NewTest("Test text")
+	test := NewTest()
+	test.text = "Test text"
 	test.playCharacter('T')
 	test.playCharacter('e')
 	test.playCharacter('s')
@@ -84,7 +98,8 @@ func TestPlaySpace_WhenCorrect_TracksRunningWpm(t *testing.T) {
 }
 
 func TestPlaySpace_WhenIncorrect(t *testing.T) {
-	test := NewTest("Test text")
+	test := NewTest()
+	test.text = "Test text"
 	test.currentIndex = 3
 
 	test.playSpace()
@@ -107,7 +122,8 @@ func TestPlaySpace_WhenIncorrect(t *testing.T) {
 }
 
 func TestPlayBackspace_WhenYetToTypeLetter(t *testing.T) {
-	test := NewTest("Test text")
+	test := NewTest()
+	test.text = "Test text"
 	test.currentIndex = 2
 
 	test.playBackspace()
@@ -118,7 +134,8 @@ func TestPlayBackspace_WhenYetToTypeLetter(t *testing.T) {
 }
 
 func TestPlayBackspace_WhenIncorrectLetterEntered(t *testing.T) {
-	test := NewTest("Test text")
+	test := NewTest()
+	test.text = "Test text"
 	test.currentIndex = 2
 
 	test.playCharacter('x')
@@ -131,7 +148,8 @@ func TestPlayBackspace_WhenIncorrectLetterEntered(t *testing.T) {
 }
 
 func TestPlayCharacter_OnLastCharacter_MarksTestAsComplete(t *testing.T) {
-	test := NewTest("Test")
+	test := NewTest()
+	test.text = "Test"
 	test.currentIndex = 3
 
 	test.playCharacter('t')
@@ -142,7 +160,8 @@ func TestPlayCharacter_OnLastCharacter_MarksTestAsComplete(t *testing.T) {
 }
 
 func TestPlayCharacter_OnNonLastCharacter_ReturnsFalse(t *testing.T) {
-	test := NewTest("Test")
+	test := NewTest()
+	test.text = "Test text"
 	test.currentIndex = 2
 
 	if test.playCharacter('s') {
@@ -151,7 +170,8 @@ func TestPlayCharacter_OnNonLastCharacter_ReturnsFalse(t *testing.T) {
 }
 
 func TestPlayCharacter_OnLastCharacter_ReturnsTrue(t *testing.T) {
-	test := NewTest("Test")
+	test := NewTest()
+	test.text = "Test"
 	test.currentIndex = 3
 
 	if !test.playCharacter('t') {

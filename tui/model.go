@@ -9,9 +9,9 @@ import (
 type modelState = int
 
 const (
-	Ready        modelState = 1
-	InTest                  = 2
-	TestComplete            = 3
+	Ready modelState = iota
+	InTest
+	TestComplete
 )
 
 type Model struct {
@@ -27,7 +27,7 @@ type Model struct {
 func InitModel() Model {
 	return Model{
 		state: Ready,
-		test:  practice.NewTest("blue red fast slow kind strong quick brown light dark happy smart quiet loud sleep"),
+		test:  practice.NewTest(),
 	}
 }
 
